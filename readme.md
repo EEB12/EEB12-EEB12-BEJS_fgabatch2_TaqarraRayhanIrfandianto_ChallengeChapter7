@@ -1,0 +1,1 @@
+Most of API is already integrated with front end but not for register 

@@ -1,0 +1,582 @@
+swagger: '2.0'
+info:
+  description: This is documentation for bank system.
+  version: 1.0.0
+  title: Swagger bank system 2.0
+host: localhost:3000
+basePath: /api/v1
+tags:
+  - name: account
+    description: operations about account
+    
+  
+  - name: user
+    description: Operations about user
+    
+  - name: transaction
+    description: Operations about Transaction
+  
+  - name: auth
+    description: Authentication operations
+schemes:
+  - https
+  - http
+paths:
+  /account:
+    get:
+      tags:
+        - account
+      summary: get account lists
+      description: ''
+      operationId: getPet
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AccountAll'
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+    post:
+      tags:
+        - account
+      summary: Add a new pet to the store
+      description: ''
+      operationId: addPet
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+      
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Pet object that needs to be added to the store
+          required: true
+          schema:
+            $ref: '#/definitions/Account'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Account'
+        '400':
+          description: Invalid input
+        
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+  /account/{accountId}:
+    get:
+      tags:
+        - account
+      summary: Find pet by ID
+      description: Returns a single pet
+      operationId: getPetById
+      produces:
+        
+        - application/json
+      parameters:
+        - name: AccountId
+          in: path
+          description: ID of account to return
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Account'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+      security:
+        - api_key: []
+   
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      produces:
+       
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Created user object
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/UserRespond'
+    
+    get:
+      tags:
+        - user
+      summary: get account lists
+      description: ''
+      operationId: getPet
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+      parameters: []
+      
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/UserAll'
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+  
+  /user/{userId}:
+    get:
+      tags:
+        - user
+      summary: Find user by ID
+      description: Returns a single user
+      operationId: getPetById
+      produces:
+        
+        - application/json
+      parameters:
+        - name: UsertId
+          in: path
+          description: ID of User to return
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/UserRespond'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+      security:
+        - api_key: []
+
+  /transaction:
+
+   get:
+      tags:
+        - transaction
+      summary: Get transaction list
+      description: Retrieve a list of all transactions
+      operationId: getTransaction
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: A list of transactions
+          schema:
+            $ref: '#/definitions/TransactionAll'
+        '500':
+          description: Internal server error
+   post:
+      tags:
+        - transaction
+      summary: Create a new transaction
+      description: Create a new transaction record
+      operationId: createTransaction
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Transaction object to be created
+          required: true
+          schema:
+            $ref: '#/definitions/TransactionCreate'
+      responses:
+        '201':
+          description: Transaction created successfully
+          schema:
+            $ref: '#/definitions/Transaction'
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+  
+  /transaction/{id}:
+    get:
+      tags:
+        - transaction
+      summary: Get transaction by ID
+      description: Retrieve a specific transaction by its ID
+      operationId: getTransactionById
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: ID of the transaction to return
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Transaction found
+          schema:
+            $ref: '#/definitions/Transaction'
+        '404':
+          description: Transaction not found
+        '500':
+          description: Internal server error
+    
+  /login:
+    post:
+      tags:
+        - auth
+      summary: User login
+      description: Logs in a user and returns a JWT token
+      operationId: loginUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: User credentials
+          required: true
+          schema:
+            $ref: '#/definitions/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        '401':
+          description: Unauthorized - Invalid email or password
+        '500':
+          description: Internal server error
+
+  /authenticate:
+    get:
+      tags:
+        - auth
+      summary: Authenticate user
+      description: Validates the JWT token and returns user information
+      operationId: authenticateUser
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Token is valid, returns user information
+          schema:
+            $ref: '#/definitions/AuthUserResponse'
+        '401':
+          description: Unauthorized - No token or invalid token
+       
+        '500':
+          description: Internal server error
+
+securityDefinitions:
+  petstore_auth:
+    type: oauth2
+    authorizationUrl: http://petstore.swagger.io/oauth/dialog
+    flow: implicit
+    scopes:
+      write:pets: modify pets in your account
+      read:pets: read your pets
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+definitions:
+
+  Category:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    xml:
+      name: Category
+  
+  
+  Profile:
+    type: object
+    required:
+      - name
+      - photoUrls
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      
+      identity_type:
+        type: string
+        example: National ID
+      identity_number:
+        type: string
+        example: 123456789
+      userID:
+        type: integer
+        format: int64
+        example: 10
+
+  UserRespond:
+    type: object
+    required:
+      - name
+      - photoUrls
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 10
+      
+      name:
+        type: string
+        example: irfand
+
+      profile:
+        $ref: '#/definitions/Profile'
+      
+      
+      
+
+  User:
+    type: object
+    required:
+      - name
+      - photoUrls
+    properties:
+      
+      
+      name:
+        type: string
+        example: irfand
+      email:
+        type: string
+        example: irfa22n@gmail.com
+      password:
+        type: string
+        example: password123
+
+     
+  UserAll:
+    type: array
+    items:
+      $ref: '#/definitions/User'
+    example:
+      - id: 5
+        name: Rayhan
+        email: rayhan@gmail.com
+        profile: 
+            identity_type: National ID,
+            identity_number: 123456789
+        
+        bank_account: 
+            
+          - id: 3
+            bank_name: Bank kita
+            bank_account_number: "42145317435"
+            balance: 1420
+            userId: 5
+          - id: 5
+            bank_name: Bank kita
+            bank_account_number: "42145317435"
+            balance: 1420
+            userId: 5
+            
+        
+      - id: 6
+        name: irfand
+        email: irfand@gmail.com
+        profile: 
+            identity_type: National ID,
+            identity_number: 12323456789
+        
+        bank_account: 
+            
+                id: 4
+                bank_name: Bank kita
+                bank_account_number: "45432145317435"
+                balance: 21420
+                userId: 6
+            
+        
+  ApiResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      type:
+        example: halo
+        type: string
+      message:
+        type: string
+  Account:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 5
+      bank_name:
+        type: string
+        example: bank kita
+      bank_account_number:
+        type: string
+        example: '4214677435'
+      balance:
+        type: integer
+        format: int32
+        example: 2000
+      userID:
+        type: integer
+        format: int32
+        example: 5
+  AccountAll:
+    type: array
+    items:
+      $ref: '#/definitions/Account'
+    example:
+      - id: 5
+        bank_name: Bank kita
+        bank_account_number: '642145317435'
+        balance: 2000
+        userId: 5
+      - id: 6
+        bank_name: Bank Lain
+        bank_account_number: '753951456852'
+        balance: 3500
+        userId: 6
+  Transaction:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      amount:
+        type: number
+        format: float
+        example: 1000.0
+      type:
+        type: string
+        example: "DEPOSIT"
+      source_account_id:
+        type: integer
+        format: int32
+        example: 12
+      destination_account_id:
+        type: integer
+        format: int32
+        example: 2
+      source_account:
+        $ref: '#/definitions/Account'
+      destination_account:
+        $ref: '#/definitions/Account'
+  TransactionAll:
+    type: array
+    items:
+      $ref: '#/definitions/Transaction'
+    example:
+      - id: 1
+        amount: 1000.0
+        type: "TRANSFER"
+        source_account_id: 1
+        destination_account_id: 2
+        source_account: 
+          id: 1
+          bank_name: "Bank Lain"
+          bank_account_number: '733351456852'
+          balance: 3500
+          userId: 5
+        destination_account:
+          id: 2
+          bank_name: "Bank Lain"
+          bank_account_number: '753951456852'
+          balance: 3500
+          userId: 6
+  TransactionCreate:
+    type: object
+    properties:
+      amount:
+        type: number
+        format: float
+        example: 1000.0
+      type:
+        type: string
+        example: "DEPOSIT"
+      source_account_id:
+        type: integer
+        format: int32
+        example: 1
+      destination_account_id:
+        type: integer
+        format: int32
+        example: 2
+
+  LoginRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        example: user@example.com
+      password:
+        type: string
+        example: password123
+    required:
+      - email
+      - password
+
+  LoginResponse:
+    type: object
+    properties:
+      token:
+        type: string
+        example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+  AuthUserResponse:
+    type: object
+    properties:
+      user:
+        type: integer
+        example: 1
+      email:
+        type: string
+        example: user@example.com
+
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
